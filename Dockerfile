@@ -17,13 +17,15 @@ RUN apt-get update && \
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
     sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php5/apache2/php.ini
 
+RUN rm -f /etc/apache2/sites-enabled/000-default.conf
+ADD apache/sites-enabled/000-default.conf   /etc/apache2/sites-enabled/000-default.conf
+
 # Add image configuration and scripts
 ADD run.sh /run.sh
 RUN chmod 755 /*.sh
 
-# Configure /app folder with sample app
-RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
-ADD sample/ /app
+RUN rm -Rf /var/www/html
+ADD sample/ /var/www/html
 
 EXPOSE 80
 WORKDIR /app
